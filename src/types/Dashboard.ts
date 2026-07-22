@@ -1,3 +1,10 @@
+export interface SystemStatus {
+    healthy: boolean;
+    lastAttemptUtc: string;
+    lastSuccessfulRunUtc: string;
+    lastError: string | null;
+}
+
 export interface DashboardInstrument {
   ticker: string;
   name: string;
@@ -8,6 +15,6 @@ export interface Dashboard {
   trackedInstruments: number;
   marketPrices: number;
   lastImportUtc: string;
-  status: string;
   instruments: DashboardInstrument[];
+  systemStatus: SystemStatus;
 }

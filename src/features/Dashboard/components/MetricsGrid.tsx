@@ -1,18 +1,19 @@
 import MetricCard from "./MetricCard";
 import { formatUtcDate, relativeTime } from "@/lib/datetime";
+import type { SystemStatus } from "@/types/Dashboard";
 
 type Props = {
     trackedInstruments: number;
     marketPrices: number;
     lastImport: string;
-    status: string;
+    systemStatus: SystemStatus;
 };
 
 export default function MetricsGrid({
     trackedInstruments,
     marketPrices,
     lastImport,
-    status,
+    systemStatus
 }: Props) {
     const now = new Date();
 
@@ -27,6 +28,11 @@ export default function MetricsGrid({
         minute: "2-digit",
         timeZoneName: "short",
     });
+
+    const lastSync = new Date(systemStatus.lastSuccessfulRunUtc);
+
+        const nextSync = new Date(lastSync);
+        nextSync.setHours(nextSync.getHours() + 1);
 
     return (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mb-8">
@@ -53,9 +59,12 @@ export default function MetricsGrid({
             />
 
             <MetricCard
-                title="Status"
-                value={status}
-                subtitle="Last import successful"
+                title="System Health"
+                value={systemStatus.healthy ? "🟢 Healthy" : "🔴 Error"}
+                subtitle={`Last sync ${lastSync.toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}`}
             />
         </div>
     );

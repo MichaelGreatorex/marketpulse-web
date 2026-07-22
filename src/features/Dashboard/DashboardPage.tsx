@@ -1,6 +1,5 @@
 import { useDashboard } from "./hooks/useDashboard";
 import DashboardHeader from "./components/DashboardHeader";
-import MetricCard from "./components/MetricCard";
 import MetricsGrid from "./components/MetricsGrid";
 
 const DashboardPage = () => {
@@ -17,7 +16,7 @@ const DashboardPage = () => {
                 trackedInstruments={data?.trackedInstruments ?? 0}
                 marketPrices={data?.marketPrices ?? 0}
                 lastImport={data?.lastImportUtc ?? ""}
-                status={data?.status ?? ""}
+                systemStatus={data?.systemStatus ?? { healthy: false, lastAttemptUtc: "", lastSuccessfulRunUtc: "", lastError: null }}
             />
             <ul>
                 {data?.instruments.map((instrument) => (
