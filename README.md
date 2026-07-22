@@ -1,32 +1,89 @@
-# React + TypeScript + Vite
+# MarketPulse Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend for the MarketPulse dashboard, built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## What Is Implemented
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Single-page dashboard route at `/`.
+- Data loading via TanStack Query (`useDashboard`) from `/api/dashboard`.
+- API client built with Axios and `VITE_API_URL` base URL.
+- Dashboard header plus five metric cards:
+  - Tracked Instruments
+  - Market Prices
+  - Last Import (formatted UTC + relative time)
+  - Date & Time (local)
+  - Status
+- Basic instrument rendering as a list (`ticker - name (exchange)`).
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + TypeScript
+- Vite 8
+- React Router 7
+- TanStack React Query 5
+- Tailwind CSS 4 + shadcn UI styles
+- Axios
+- Oxlint + Prettier
 
-## Expanding the Oxlint configuration
+## App Flow
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+1. `src/main.tsx` mounts the app inside `BrowserRouter`.
+2. `src/app/App.tsx` wraps routing with `QueryProvider`.
+3. `src/app/router/AppRouter.tsx` maps `/` to `DashboardPage`.
+4. `DashboardPage` calls `useDashboard()` and renders metrics + instruments.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+## API Contract Used by the UI
+
+The UI expects `/api/dashboard` to return:
+
+```ts
+interface DashboardInstrument {
+  ticker: string;
+  name: string;
+  exchange: string;
+}
+
+interface Dashboard {
+  trackedInstruments: number;
+  marketPrices: number;
+  lastImportUtc: string;
+  status: string;
+  instruments: DashboardInstrument[];
 }
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Use the correct backend URL for your environment.
+
+## Scripts
+
+- `npm run dev` - Start Vite dev server
+- `npm run build` - Type-check and build production assets
+- `npm run preview` - Preview the production build locally
+- `npm run lint` - Run Oxlint
+
+## Local Setup
+
+```bash
+npm install
+npm run dev
+```
+
+Then open the local URL printed by Vite (usually `http://localhost:5173`).
+
+## Current Implementation Notes
+
+- Loading state is implemented (`Loading...`), but no dedicated error-state UI is rendered yet.
+- Instrument data is currently shown as a plain list, not the table component scaffold.
+- Some scaffold files currently exist but are empty:
+  - `src/app/AppLayout.tsx`
+  - `src/app/providers/ThemeProvider.tsx`
+  - `src/features/Dashboard/components/DashboardMetrics.tsx`
+  - `src/features/Dashboard/components/InstrumentTable.tsx`
