@@ -8,11 +8,13 @@ import {
 type MetricCardProps = {
     title: string;
     value: string | number;
+    subtitle?: string;
 };
 
 export default function MetricCard({
     title,
     value,
+    subtitle,
 }: MetricCardProps) {
     return (
         <Card>
@@ -23,9 +25,14 @@ export default function MetricCard({
             </CardHeader>
 
             <CardContent>
-                <p className="text-3xl font-bold">
+                <p className="text-2xl font-bold">
                     {value}
                 </p>
+                {subtitle && (
+                    <p className="text-sm text-muted-foreground">
+                        {subtitle}
+                    </p>
+                )}
             </CardContent>
         </Card>
     );
