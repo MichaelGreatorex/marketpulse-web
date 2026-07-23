@@ -1,4 +1,4 @@
-export function formatUtcDate(date?: string): string {
+export function formatUtcDateTime(date?: string): string {
     if (!date) {
         return "Never";
     }
@@ -10,35 +10,65 @@ export function formatUtcDate(date?: string): string {
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
             timeZone: "UTC",
         }).format(new Date(date)) + " UTC"
     );
 }
 
-export function relativeTime(date: string): string {
-    
+export function formatLocalDateTime(date: Date): string {
+    return new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZoneName: "short",
+    }).format(date);
+}
+
+export function formatLocalTime(date: Date): string {
+    return new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZoneName: "short",
+    }).format(date);
+}
+
+export function formatLocalDate(date: Date): string {
+    return new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    }).format(date);
+}
+
+export function formatRelativeTime(date?: string): string {
     if (!date) {
-        return "No successful imports";
+        return "Never";
     }
-    
-    const diff =
-        Date.now() - new Date(date).getTime();
 
-    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor(
+        (Date.now() - new Date(date).getTime()) / 1000
+    );
 
-    if (minutes < 1)
-        return "Just now";
+    if (seconds < 10) return "Just now";
 
-    if (minutes === 1)
-        return "1 minute ago";
+    if (seconds < 60) return `${seconds} seconds ago`;
+
+    const minutes = Math.floor(seconds / 60);
 
     if (minutes < 60)
-        return `${minutes} minutes ago`;
+        return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
 
     const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
 
-    if (hours === 1)
-        return "1 hour ago";
-
-    return `${hours} hours ago`;
+    return `${hours}h ${remainingMinutes}m ago`;
 }

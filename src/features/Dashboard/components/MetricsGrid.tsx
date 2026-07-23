@@ -1,19 +1,22 @@
 import MetricCard from "./MetricCard";
-import { formatUtcDate, relativeTime } from "@/lib/datetime";
-import type { SystemStatus } from "@/types/Dashboard";
+import { formatUtcDateTime, formatRelativeTime } from "@/lib/datetime";
+import type { SystemStatus, MarketStatus } from "@/types/Dashboard";
+
 
 type Props = {
-    trackedInstruments: number;
+    trackedInstruments: number
     marketPrices: number;
     lastImport: string;
     systemStatus: SystemStatus;
+    marketStatus: MarketStatus;
 };
 
 export default function MetricsGrid({
     trackedInstruments,
     marketPrices,
     lastImport,
-    systemStatus
+    systemStatus,
+    marketStatus,
 }: Props) {
     const now = new Date();
 
@@ -48,8 +51,8 @@ export default function MetricsGrid({
 
             <MetricCard
                 title="Last Import"
-                value={formatUtcDate(lastImport)}
-                subtitle={relativeTime(lastImport)}
+                value={formatUtcDateTime(lastImport)}
+                subtitle={formatRelativeTime(lastImport)}
             />
 
             <MetricCard
@@ -57,6 +60,7 @@ export default function MetricsGrid({
                 value={localDate}
                 subtitle={localTime}
             />
+            
 
             <MetricCard
                 title="System Health"
@@ -66,6 +70,20 @@ export default function MetricsGrid({
                     minute: "2-digit",
                 })}`}
             />
+
+            <MetricCard
+                title="Market Session"
+                value={
+                    marketStatus
+                        ? `${marketStatus.flag} ${marketStatus.country}`
+                        : "-"
+                }
+                subtitle={
+                    marketStatus
+                        ? `${marketStatus.isOpen ? "🟢 OPEN" : "🔴 CLOSED"} • ${marketStatus.exchange}`
+                        : ""
+                }
+/>
         </div>
     );
 }
