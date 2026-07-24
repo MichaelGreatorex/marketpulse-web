@@ -27,3 +27,21 @@ export interface MarketStatus {
     isOpen: boolean;
     nextEvent: string;
 }
+
+export interface Dashboard {
+    overview: DashboardOverview;
+
+    systemStatus: SystemStatus;
+
+    marketStatus: MarketStatus;
+}
+
+export interface DashboardOverview {
+    trackedInstruments: number;
+
+    marketPrices: number;
+
+    lastImportUtc: string;
+
+    instruments: DashboardInstrument[];
+}

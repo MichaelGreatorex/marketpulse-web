@@ -40,14 +40,14 @@ const DashboardPage = () => {
                 </span>
             )}  
             <MetricsGrid
-                trackedInstruments={data?.trackedInstruments ?? 0}
-                marketPrices={data?.marketPrices ?? 0}
-                lastImport={data?.lastImportUtc ?? ""}
+                trackedInstruments={data.overview.trackedInstruments ?? 0}
+                marketPrices={data.overview.marketPrices ?? 0}
+                lastImport={data.overview.lastImportUtc ?? ""}
                 systemStatus={data.systemStatus}
                 marketStatus={data.marketStatus}
             />
             <ul>
-                {data?.instruments.map((instrument) => (
+                {data.overview.instruments.map((instrument) => (
                     <li key={instrument.ticker}>
                         {instrument.ticker} - {instrument.name} ({instrument.exchange})
                     </li>
