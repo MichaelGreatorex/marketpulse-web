@@ -1,58 +1,55 @@
-import { useDashboard } from "./hooks/useDashboard";
 import DashboardHeader from "./components/DashboardHeader";
-import MetricsGrid from "./components/MetricsGrid";
-import { useEffect, useState } from "react";
-import LiveClock from "@/components/ui/LiveClock";
+import OverviewSection from "./components/OverviewSection";
+import LiveMarketSection from "./components/LiveMarketSection";
+import ActivitySection from "./components/ActivitySection";
+
+import { useDashboard } from "./hooks/useDashboard";
 
 const DashboardPage = () => {
-
     const {
         data,
         isPending,
         isFetching,
     } = useDashboard();
 
-    const [now, setNow] = useState(new Date());
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setNow(new Date());
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
-
     if (isPending) {
-        return <div>Loading...</div>;
+        return (
+            <div className="p-8 text-muted-foreground">
+                Loading dashboard...
+            </div>
+        );
     }
 
     if (!data) {
-        return <div>No data.</div>;
+        return (
+            <div className="p-8 text-muted-foreground">
+                Unable to load dashboard.
+            </div>
+        );
     }
 
     return (
-        <main className="mx-auto max-w-7xl p-8">
-            <DashboardHeader />
-            <LiveClock />
-            {isFetching && (
-                <span className="text-sm text-muted-foreground">
-                    Refreshing...
-                </span>
-            )}  
-            <MetricsGrid
-                trackedInstruments={data.overview.trackedInstruments ?? 0}
-                marketPrices={data.overview.marketPrices ?? 0}
-                lastImport={data.overview.lastImportUtc ?? ""}
+        <main className="mx-auto max-w-7xl space-y-10 p-8">
+
+            <DashboardHeader
+                refreshing={isFetching}
+                marketStatus={data.marketStatus}
+            />
+
+            <OverviewSection
+                overview={data.overview}
                 systemStatus={data.systemStatus}
                 marketStatus={data.marketStatus}
             />
-            <ul>
-                {data.overview.instruments.map((instrument) => (
-                    <li key={instrument.ticker}>
-                        {instrument.ticker} - {instrument.name} ({instrument.exchange})
-                    </li>
-                ))}
-            </ul>
+
+            <LiveMarketSection
+                overview={data.overview}
+            />
+
+            <ActivitySection
+                systemStatus={data.systemStatus}
+            />
+
         </main>
     );
 };
